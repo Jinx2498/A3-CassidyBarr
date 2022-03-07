@@ -1,0 +1,144 @@
+{
+    "name": "InputActions",
+    "maps": [
+        {
+            "name": "PauseAction",
+            "id": "eb4279c1-cda1-4b3d-916e-10d45461e38e",
+            "actions": [
+                {
+                    "name": "PauseGame",
+                    "type": "Button",
+                    "id": "fb9c7ee8-0a46-4677-bd1f-42be89e26fe4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "98fe19ce-ed8e-4948-a6bd-29bedd4259ee",
+                    "path": "<Keyboard>/pageUp",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PauseGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "AudioAction",
+            "id": "01ff4c06-51a8-487c-be3f-e23112c4986d",
+            "actions": [
+                {
+                    "name": "PlayTrack",
+                    "type": "Button",
+                    "id": "047aa849-c123-4f42-9e96-b32326ad4308",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "NextTrack",
+                    "type": "Button",
+                    "id": "bf8cc685-51a7-45fb-b152-5fff4f31ecca",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PreviousTrack",
+                    "type": "Button",
+                    "id": "e585782c-1b20-496e-9797-bfb7b8bbab2e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d73dcad2-8fe3-4ae8-9a9d-de6d03f88963",
+                    "path": "<Keyboard>/pageDown",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlayTrack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2fecdf22-55f2-45e4-829a-4e42e8c6dc77",
+                    "path": "<Keyboard>/end",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextTrack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c9175d6c-0502-4622-8b06-0bb62b8b18dd",
+                    "path": "<Keyboard>/home",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PreviousTrack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "SceneManagement",
+            "id": "0e1b26a4-3e33-482d-9e8a-24769b4963cb",
+            "actions": [
+                {
+                    "name": "Quit",
+                    "type": "Button",
+                    "id": "f83978b8-7695-47e9-a5a3-a8224731d1b6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MainMenu",
+                    "type": "Button",
+                    "id": "56c44121-329f-48d8-a3bd-b63ac14aea21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0ed70116-2621-4f6d-9a17-e62f39102a6d",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "435fffd8-c0b0-4c59-a951-1207130ee739",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MainMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
