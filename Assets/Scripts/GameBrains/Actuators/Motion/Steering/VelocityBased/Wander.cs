@@ -83,6 +83,13 @@ namespace GameBrains.Motion.Steering.VelocityBased
 
         public AngularStop Look { get; set; }
 
+        public float WanderCircleRate
+        {
+            get => wanderCircleRate;
+            set => wanderCircleRate = value;
+        }
+        [SerializeField] float wanderCircleRate = 1f;
+
         public float WanderCircleRadius
         {
             get => wanderCircleRadius;
@@ -119,19 +126,63 @@ namespace GameBrains.Motion.Steering.VelocityBased
         }
         [SerializeField] float wanderCloseEnoughDistance = 1f;
 
+        private float wanderOrientation = 0f;
+
+        private float RandomBinomial() {
+            return Random.value - Random.value;
+        }
+
+        private VectorXZ OrientationToVector(float orientation) {
+            return new VectorXZ(Mathf.Cos(orientation), Mathf.Sin(orientation));
+        }
+
+        public virtual bool WanderActive { get; protected set; } = true;
         float wanderAngle;
         bool wanderCompletedEventSent;
         
         #endregion Members and Properties
-
+        public Transform OwnerTransform;      
+        
         #region Steering
 
         public override SteeringOutput Steer()
         {
-            // TODO for A3 (optional): Replace
+            VectorXZ desiredDirection = TargetLocation - SteeringData.Location;
 
-            // no effect
-            return new SteeringOutput { Type = SteeringOutput.Types.Velocities };
+            float distance = desiredDirection.magnitude;
+
+            wanderOrientation += RandomBinomial() * wanderCircleRate;
+
+            float characterOrientation = OwnerTransform.rotation.eulerAngles.y * Mathf.Deg2Rad;
+            float targetOrientation = wanderOrientation + characterOrientation;
+        
+            VectorXZ targetPos = SteeringData.Location + (wanderCircleOffset * OrientationToVector(characterOrientation));
+
+            targetPos += wanderCircleRadius * OrientationToVector(targetOrientation);
+
+            WanderActive = (distance > wanderCloseEnoughDistance) && !wanderCompletedEventSent;
+            
+            if (WanderActive)
+            {
+                return new SteeringOutput
+                {
+                    Type = SteeringOutput.Types.Velocities,
+                    Linear = targetPos - SteeringData.Location 
+                };
+            }
+
+            if (!NeverCompletes && !wanderCompletedEventSent)
+            {
+                wanderCompletedEventSent = true;
+                EventManager.Instance.Enqueue(
+                    Events.WanderCompleted,
+                    new WanderCompletedEventPayload(
+                        ID,
+                        SteeringData.Owner,
+                        this));
+            }
+
+            return Steer();
         }
 
         #endregion Steering

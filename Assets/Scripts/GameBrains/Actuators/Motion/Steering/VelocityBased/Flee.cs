@@ -76,10 +76,33 @@ namespace GameBrains.Motion.Steering.VelocityBased
 
         public override SteeringOutput Steer()
         {
-            // TODO for A3: Replace
+            VectorXZ desiredDirection = TargetLocation - SteeringData.Location;
 
-            // no effect
-            return new SteeringOutput { Type = SteeringOutput.Types.Velocities };
+            float distance = desiredDirection.magnitude;
+
+            FleeActive = (distance > escapeDistance) && !fleeCompletedEventSent;
+            
+            if (FleeActive) {
+                
+                VectorXZ desiredVelocity = desiredDirection / distance * SteeringData.MaximumSpeed;
+
+                return new SteeringOutput{
+                    Type = SteeringOutput.Types.Velocities,
+                    Linear = SteeringData.Velocity - desiredVelocity
+                };
+            }
+
+            if (!NeverCompletes && !fleeCompletedEventSent) {
+                fleeCompletedEventSent = true;
+                EventManager.Instance.Enqueue(
+                    Events.FleeCompleted,
+                    new FleeCompletedEventPayload(
+                        ID,
+                        SteeringData.Owner,
+                        this));
+            }
+
+            return base.Steer();
         }
 
         #endregion Steering
@@ -116,3 +139,4 @@ namespace GameBrains.EventSystem // NOTE: Don't change this namespace
 }
 
 #endregion Events
+

@@ -12,6 +12,7 @@ namespace GameBrains.Motion.Steering.VelocityBased
     [System.Serializable]
     public class Seek : LinearSlow
     {
+
         #region Creators
 
         public new static Seek CreateInstance(SteeringData steeringData)

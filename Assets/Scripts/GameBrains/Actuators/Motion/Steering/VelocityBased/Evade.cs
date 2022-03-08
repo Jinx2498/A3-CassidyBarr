@@ -53,15 +53,55 @@ namespace GameBrains.Motion.Steering.VelocityBased
         bool evadeCompletedEventSent;
 
         #endregion Members and Properties
+        private float maxPredict = 2f;
 
         #region Steering
 
-        public override SteeringOutput Steer()
-        {
-            // TODO for A3: Replace
+        public override SteeringOutput Steer() {
 
-            // no effect
-            return new SteeringOutput { Type = SteeringOutput.Types.Velocities };
+            VectorXZ desiredDirection = TargetLocation - SteeringData.Location;
+
+            float distance = desiredDirection.magnitude;
+
+            VectorXZ desiredVelocity = desiredDirection / distance * SteeringData.MaximumSpeed;
+
+
+            float speed = desiredVelocity.magnitude;
+            float predict;
+
+            if(speed <= (distance/maxPredict)) {
+                predict = maxPredict;
+            } else {
+                predict = distance/speed;
+            }
+
+            VectorXZ predictTargetLocation = TargetLocation + (desiredVelocity * predict);
+
+            EvadeActive = (distance > EscapeDistance) && !evadeCompletedEventSent;
+            
+            if (EvadeActive) {
+
+                desiredDirection = predictTargetLocation - SteeringData.Location;
+
+                desiredVelocity = desiredDirection / distance * SteeringData.MaximumSpeed;
+
+                return new SteeringOutput{
+                    Type = SteeringOutput.Types.Velocities,
+                    Linear = SteeringData.Velocity - desiredVelocity
+                };
+            }
+
+            if (!NeverCompletes && !evadeCompletedEventSent) {
+                evadeCompletedEventSent = true;
+                EventManager.Instance.Enqueue(
+                    Events.EvadeCompleted,
+                    new EvadeCompletedEventPayload(
+                        ID,
+                        SteeringData.Owner,
+                        this));
+            }
+
+            return base.Steer();
         }
 
         #endregion Steering
@@ -98,3 +138,4 @@ namespace GameBrains.EventSystem // NOTE: Don't change this namespace
 }
 
 #endregion Events
+

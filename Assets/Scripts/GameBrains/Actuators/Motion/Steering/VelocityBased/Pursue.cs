@@ -54,14 +54,55 @@ namespace GameBrains.Motion.Steering.VelocityBased
 
         #endregion Members and Properties
 
+        private float maxPredict = 2f;
+
         #region Steering
 
         public override SteeringOutput Steer()
         {
-            // TODO for A3: Replace
+            VectorXZ desiredDirection = TargetLocation - SteeringData.Location;
 
-            // no effect
-            return new SteeringOutput { Type = SteeringOutput.Types.Velocities };
+            float distance = desiredDirection.magnitude;
+
+            VectorXZ desiredVelocity = desiredDirection / distance * SteeringData.MaximumSpeed;
+
+
+            float speed = desiredVelocity.magnitude;
+            float predict;
+
+            if(speed <= (distance/maxPredict)) {
+                predict = maxPredict;
+            } else {
+                predict = distance/speed;
+            }
+
+            VectorXZ predictTargetLocation = TargetLocation + (desiredVelocity * predict);
+
+            PursueActive = (distance > CloseEnoughDistance) && !pursueCompletedEventSent;
+            
+            if (PursueActive) {
+
+                desiredDirection = predictTargetLocation - SteeringData.Location;
+
+                desiredVelocity = desiredDirection / distance * SteeringData.MaximumSpeed;
+
+                return new SteeringOutput{
+                    Type = SteeringOutput.Types.Velocities,
+                    Linear = desiredVelocity - SteeringData.Velocity
+                };
+            }
+
+            if (!NeverCompletes && !pursueCompletedEventSent) {
+                pursueCompletedEventSent = true;
+                EventManager.Instance.Enqueue(
+                    Events.PursueCompleted,
+                    new PursueCompletedEventPayload(
+                        ID,
+                        SteeringData.Owner,
+                        this));
+            }
+
+            return base.Steer();
         }
 
         #endregion Steering
@@ -98,3 +139,4 @@ namespace GameBrains.EventSystem // NOTE: Don't change this namespace
 }
 
 #endregion Events
+
